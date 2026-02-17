@@ -1,29 +1,38 @@
 class SharedBuffer {
+
     private int item;
     private boolean available = false;
 
-    synchronized void produce(int value) {
+    // Produce method
+    public synchronized void produce(int value) {
         while (available) {
             try {
                 wait();
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
         }
 
         item = value;
-        System.out.println("Produced: " + item);
         available = true;
+        System.out.println("Produced: " + item);
+
         notify();
     }
 
-    synchronized void consume() {
+    // Consume method
+    public synchronized void consume() {
         while (!available) {
             try {
                 wait();
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
         }
 
         System.out.println("Consumed: " + item);
         available = false;
+
         notify();
     }
 }
@@ -57,7 +66,9 @@ class Consumer extends Thread {
 }
 
 public class ProducerConsumer {
+
     public static void main(String[] args) {
+
         SharedBuffer buffer = new SharedBuffer();
 
         Producer p = new Producer(buffer);
